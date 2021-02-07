@@ -4,8 +4,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    # Templates klasörü altında olması gerekiyor. Flask dosya dizini oraya bakıyor.
-    return render_template("index.html")
+    sayi = 10
+    # index.html templates klasörü altında olması gerekiyor. Flask dosya dizini oraya bakıyor.
+    # number değişkenini template'e gönderdik.
+    return render_template("index.html", number=sayi)
 
 
 if __name__ == "__main__":
