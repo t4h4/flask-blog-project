@@ -6,12 +6,10 @@
         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam accusamus laudantium repellendus magni sit officia voluptatum tempora, non quaerat dicta!</p>
     </div>
 
-    {% if answer == "evet" %}
-        <p>Cevap evet.</p>
-    {% elif answer == "hayır" %} 
-        <p>Cevap hayır.</p>   
-    {% else %}
-        <p>Cevap başa bi şey.</p>
-    {% endif %}
+    <ul>
+        {% for article in articles %}
+            <li>Article Id: {{article.id}} - Title: {{article.title}} - Content: {{article.content}} </li>
+        {% endfor %}
+    </ul>
 
 {% endblock body %}
