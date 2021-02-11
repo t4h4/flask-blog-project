@@ -65,7 +65,7 @@ def register():
         mysql.connection.commit() # veritabanında değişiklik yaptığımız vakit commit etmek zorundayız.
 
         cursor.close()
-        flash("Başarıyla Kayıt Oldunuz...","success")
+        flash("Başarıyla Kayıt Oldunuz...","success") # Mesaj ve kategori flash mesajı ekrana çıkart.
         return redirect(url_for("index"))
     else:
         return render_template("register.html",form = form)
