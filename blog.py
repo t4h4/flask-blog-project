@@ -3,6 +3,22 @@ from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 
+# Kullanıcı Kayıt Formu
+class RegisterForm(Form): # Form class yapısından register form class yapısı türetiliyor. (inheritance)
+    name = StringField("İsim Soyisim",validators=[validators.Length(min = 4,max = 25)])
+    username = StringField("Kullanıcı Adı",validators=[validators.Length(min = 5,max = 35)])
+    email = StringField("Email Adresi",validators=[validators.Email(message = "Lütfen Geçerli Bir Email Adresi Girin...")])
+    password = PasswordField("Parola:",validators=[
+        validators.DataRequired(message = "Lütfen bir parola belirleyin"),
+        validators.EqualTo(fieldname = "confirm",message="Parolanız Uyuşmuyor...")
+    ])
+    confirm = PasswordField("Parola Doğrula")
+
+# Kullanıcı Giriş Formu    
+class LoginForm(Form):
+    username = StringField("Kullanıcı Adı")
+    password = PasswordField("Parola")
+
 app = Flask(__name__)
 
 app.config["MYSQL_HOST"] = "localhost"
