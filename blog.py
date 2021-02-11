@@ -45,6 +45,18 @@ def about():
 def detail(id):
     return "Article Id:" + id
 
+# Register
+@app.route("/register",methods = ["GET","POST"]) # GET ve POST request alabilir url.
+def register():
+    form = RegisterForm(request.form)
+
+    if request.method == "POST" and form.validate():
+        # index fonksiyonuna ilişkili olan url adrese git.
+        return redirect(url_for("index"))
+
+    else: # Else ile GET request oldugunu anlayabiliriz.
+        return render_template("register.html",form = form)
+
 
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
