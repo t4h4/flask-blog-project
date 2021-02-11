@@ -20,6 +20,7 @@ class LoginForm(Form):
     password = PasswordField("Parola")
 
 app = Flask(__name__)
+app.secret_key= "blog"
 
 app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
@@ -51,10 +52,22 @@ def register():
     form = RegisterForm(request.form)
 
     if request.method == "POST" and form.validate():
-        # index fonksiyonuna ilişkili olan url adrese git.
-        return redirect(url_for("index"))
+        name = form.name.data # formun içindeki name değerinin datası alınıp, name değerine eşitleniyor.
+        username = form.username.data
+        email = form.email.data
+        password = sha256_crypt.encrypt(form.password.data) # veri şifrelenerek alınıyor.
+        # cursor mysql veritabanında işlem sağlamamızı yarayan yapı. bu yapı sayesinde sql sorgularını çalıştırabiliyoruz.
+        cursor = mysql.connection.cursor() 
 
-    else: # Else ile GET request oldugunu anlayabiliriz.
+        sorgu = "Insert into users(name,email,username,password) VALUES(%s,%s,%s,%s)"
+
+        cursor.execute(sorgu,(name,email,username,password))
+        mysql.connection.commit() # veritabanında değişiklik yaptığımız vakit commit etmek zorundayız.
+
+        cursor.close()
+        flash("Başarıyla Kayıt Oldunuz...","success")
+        return redirect(url_for("index"))
+    else:
         return render_template("register.html",form = form)
 
 
