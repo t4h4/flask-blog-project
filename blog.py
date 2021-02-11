@@ -65,10 +65,16 @@ def register():
         mysql.connection.commit() # veritabanında değişiklik yaptığımız vakit commit etmek zorundayız.
 
         cursor.close()
-        flash("Başarıyla Kayıt Oldunuz...","success") # Mesaj ve kategori flash mesajı ekrana çıkart.
-        return redirect(url_for("index"))
+        flash("Başarıyla Kayıt Oldunuz. Lütfen Giriş Yapınız..","success") # Mesaj ve kategori flash mesajı ekrana çıkart.
+        return redirect(url_for("login"))
     else:
         return render_template("register.html",form = form)
+
+#Login işlemi
+@app.route("/login",methods =["GET","POST"])
+def login():
+    form = LoginForm(request.form)
+    return render_template("login.html", form = form)
 
 
 if __name__ == "__main__":
