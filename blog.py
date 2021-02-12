@@ -74,7 +74,34 @@ def register():
 @app.route("/login",methods =["GET","POST"])
 def login():
     form = LoginForm(request.form)
-    return render_template("login.html", form = form)
+
+    if request.method == "POST":
+       username = form.username.data
+       password_entered = form.password.data
+
+       cursor = mysql.connection.cursor()
+
+       sorgu = "Select * From users where username = %s"
+
+       result = cursor.execute(sorgu,(username,)) # demet yapıda olması için tek değişken olsa da virgül kullanıldı.
+
+       if result > 0:
+           data = cursor.fetchone() # kullanıcının bütün bilgileri alınıyor.
+           real_password = data["password"] # kullanıcının şifresi değişkene atandı.
+
+           if sha256_crypt.verify(password_entered,real_password):
+               flash("Başarıyla Giriş Yaptınız.","success")
+               return redirect(url_for("index"))
+           else:
+               flash("Parolanızı Yanlış Girdiniz.","danger")
+               return redirect(url_for("login")) 
+
+       else:
+           flash("Böyle bir kullanıcı bulunmuyor.","danger")
+           return redirect(url_for("login"))
+
+    
+    return render_template("login.html",form = form)
 
 
 if __name__ == "__main__":
