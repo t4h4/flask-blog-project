@@ -113,6 +113,11 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
+# Kontrol Paneli
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
     app.run(debug=True)
