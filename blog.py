@@ -1,8 +1,21 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from flask import Flask,render_template,flash,redirect,url_for,session,logging,request
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from wtforms import Form,StringField,TextAreaField,PasswordField,validators
 from passlib.hash import sha256_crypt
+# decoratorlar icin gerekli
+from functools import wraps     
 
+# Kullanıcı Giriş Decorator Dashboard sayfası görüntüleme kontrolü
+# fonksiyonun içine fonksiyon gönderilmiş. def dashboard gönderilecek
+def login_required(f): 
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "logged_in" in session: # session içerisinde logged_in var mı yok mu bakıyor. bi nevi true false olmasına bakıyor.
+            return f(*args, **kwargs) # dashboard url normal bir şekilde çağırılıyor.
+        else:
+            flash("Bu sayfayı görüntülemek için lütfen giriş yapın.","danger")
+            return redirect(url_for("login")) # sonrasında login sayfasına yönlendirilir.
+    return decorated_function
 # Kullanıcı Kayıt Formu
 class RegisterForm(Form): # Form class yapısından register form class yapısı türetiliyor. (inheritance)
     name = StringField("İsim Soyisim",validators=[validators.Length(min = 4,max = 25)])
@@ -19,8 +32,10 @@ class LoginForm(Form):
     username = StringField("Kullanıcı Adı")
     password = PasswordField("Parola")
 
+
 app = Flask(__name__)
 app.secret_key= "blog"
+
 
 app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
@@ -113,8 +128,9 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
-# Kontrol Paneli
+# Kontrol Paneli Dashboard
 @app.route("/dashboard")
+@login_required
 def dashboard():
     return render_template("dashboard.html")
 
