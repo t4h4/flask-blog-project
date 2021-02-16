@@ -138,6 +138,24 @@ def dashboard():
 @app.route("/addarticle", methods = ["GET","POST"])
 def addarticle():
     form = ArticleForm(request.form) # addarticle.html sayfasında göstermek için eklemek gerekli.
+    if request.method == "POST" and form.validate():
+        title = form.title.data
+        content = form.content.data
+
+        cursor = mysql.connection.cursor()
+
+        sorgu = "Insert into articles(title,author,content) VALUES(%s,%s,%s)"
+
+        cursor.execute(sorgu,(title,session["username"],content))
+
+        mysql.connection.commit()
+
+        cursor.close()
+
+        flash("Makale Başarıyla Eklendi","success")
+
+        return redirect(url_for("dashboard"))
+        
     return render_template("addarticle.html",form = form) # form = form demek formu addarticle.html sayfasında göstermek için gerekli.
 
 # Makale Formu
