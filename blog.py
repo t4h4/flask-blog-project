@@ -134,6 +134,17 @@ def logout():
 def dashboard():
     return render_template("dashboard.html")
 
+# Makale Ekleme
+@app.route("/addarticle", methods = ["GET","POST"])
+def addarticle():
+    form = ArticleForm(request.form) # addarticle.html sayfasında göstermek için eklemek gerekli.
+    return render_template("addarticle.html",form = form) # form = form demek formu addarticle.html sayfasında göstermek için gerekli.
+
+# Makale Formu
+class ArticleForm(Form):
+    title = StringField("Makale Başlığı",validators=[validators.Length(min = 5,max = 100)]) 
+    content = TextAreaField("Makale İçeriği",validators=[validators.Length(min = 10)])
+
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
     app.run(debug=True)
