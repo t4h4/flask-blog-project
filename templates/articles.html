@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h3> Makaleler </h3>
+    <hr>
+
+    <!-- Eğer makale varsa if bloğuna girecek. Articles'ın bi' nevi true olup olmadıgına bakıyor. -->
+    {% if articles %} 
+        <ul class="list-group">
+            {% for article in articles %}
+                <li class = "list-group-item">{{article.title}}</li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <div class = "alert alert-danger">Bu blokta henüz makale bulunmuyor...</div>
+
+    {% endif %}            
+
+{% endblock body %}

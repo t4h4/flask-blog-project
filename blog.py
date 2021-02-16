@@ -155,13 +155,28 @@ def addarticle():
         flash("Makale Başarıyla Eklendi","success")
 
         return redirect(url_for("dashboard"))
-        
+
     return render_template("addarticle.html",form = form) # form = form demek formu addarticle.html sayfasında göstermek için gerekli.
 
 # Makale Formu
 class ArticleForm(Form):
     title = StringField("Makale Başlığı",validators=[validators.Length(min = 5,max = 100)]) 
     content = TextAreaField("Makale İçeriği",validators=[validators.Length(min = 10)])
+
+# Makale Sayfası
+@app.route("/articles")
+def articles():
+    cursor = mysql.connection.cursor()
+
+    sorgu = "Select * From articles"
+
+    result = cursor.execute(sorgu)
+
+    if result > 0: # Database'de makale varsa
+        articles = cursor.fetchall()
+        return render_template("articles.html", articles = articles)
+    else:
+        return render_template("articles.html")
 
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
