@@ -132,7 +132,17 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    cursor = mysql.connection.cursor()
+
+    sorgu = "Select * From articles where author = %s"
+
+    result = cursor.execute(sorgu,(session["username"],))
+
+    if result > 0:
+        articles = cursor.fetchall()
+        return render_template("dashboard.html",articles = articles)
+    else:
+        return render_template("dashboard.html")
 
 # Makale Ekleme
 @app.route("/addarticle", methods = ["GET","POST"])
