@@ -200,6 +200,29 @@ def article(id):
     else:
         return render_template("article.html")
 
+# Makale Silme
+@app.route("/delete/<string:id>")
+@login_required
+def delete(id):
+    cursor = mysql.connection.cursor()
+
+    # Sadece kendi makalemizi silme yetkisine sahip olabiliriz.
+    sorgu = "Select * from articles where author = %s and id = %s"
+
+    result = cursor.execute(sorgu,(session["username"],id))
+    # Kendimize ait makalemiz varsa aşağıdaki if bloğu çalışacak.
+    if result > 0:
+        sorgu2 = "Delete from articles where id = %s"
+
+        cursor.execute(sorgu2,(id,))
+
+        mysql.connection.commit()
+
+        return redirect(url_for("dashboard"))
+    else:
+        flash("Böyle bir makale yok veya bu işleme yetkiniz yok","danger")
+        return redirect(url_for("index"))
+
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
     app.run(debug=True)
