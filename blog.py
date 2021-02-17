@@ -223,6 +223,49 @@ def delete(id):
         flash("Böyle bir makale yok veya bu işleme yetkiniz yok","danger")
         return redirect(url_for("index"))
 
+# Makale Güncelleme
+@app.route("/edit/<string:id>",methods = ["GET","POST"])
+@login_required
+def update(id):
+    # İlk başta makale içeriğimizin gelmesini istiyoruz.
+   if request.method == "GET":
+       cursor = mysql.connection.cursor()
+
+       sorgu = "Select * from articles where id = %s and author = %s"
+       result = cursor.execute(sorgu,(id,session["username"]))
+
+       if result == 0:
+           flash("Böyle bir makale yok veya bu işleme yetkiniz yok","danger")
+           return redirect(url_for("index"))
+       else:
+           article = cursor.fetchone()
+           form = ArticleForm()
+
+           form.title.data = article["title"]
+           form.content.data = article["content"]
+           return render_template("update.html",form = form)
+
+   else:
+       # POST REQUEST
+       form = ArticleForm(request.form)
+
+       newTitle = form.title.data
+       newContent = form.content.data
+
+       sorgu2 = "Update articles Set title = %s,content = %s where id = %s "
+
+       cursor = mysql.connection.cursor()
+
+       cursor.execute(sorgu2,(newTitle,newContent,id))
+
+       mysql.connection.commit()
+
+       flash("Makale başarıyla güncellendi","success")
+
+       return redirect(url_for("dashboard"))
+
+
+
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
     app.run(debug=True)
