@@ -57,10 +57,6 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/article/<string:id>")
-def detail(id):
-    return "Article Id:" + id
-
 # Register
 @app.route("/register",methods = ["GET","POST"]) # GET ve POST request alabilir url.
 def register():
@@ -187,6 +183,22 @@ def articles():
         return render_template("articles.html", articles = articles)
     else:
         return render_template("articles.html")
+
+# Makale Detay Sayfası
+@app.route("/article/<string:id>")
+def article(id):
+    cursor = mysql.connection.cursor()
+    
+    sorgu = "Select * from articles where id = %s"
+
+    result = cursor.execute(sorgu,(id,))
+
+    if result > 0:
+        article = cursor.fetchone()
+        # makale article.html'e gönderiliyor.
+        return render_template("article.html",article = article)
+    else:
+        return render_template("article.html")
 
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
