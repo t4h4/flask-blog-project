@@ -6,6 +6,14 @@
 
     <!-- Eğer makale varsa if bloğuna girecek. Articles'ın bi' nevi true olup olmadıgına bakıyor. -->
     {% if articles %} 
+        <!-- Search'e git -->
+        <form action="/search" method = "post">
+            <!-- input alanına name değeri verelim ki içerisindeki bilgiyi alalım. -->
+            <input type="text" name = "keyword" class="input-sm" maxlength="64" placeholder="Ara...">
+            <button type="submit" class="btn btn-danger">Ara</button>
+        </form>
+        <hr>
+
         <ul class="list-group">
             {% for article in articles %}
                 <li class = "list-group-item"><a href="article/{{article.id}}">{{article.title}}</a></li>

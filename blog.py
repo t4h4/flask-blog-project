@@ -264,7 +264,29 @@ def update(id):
 
        return redirect(url_for("dashboard"))
 
+# Arama 
+@app.route("/search",methods = ["GET","POST"])
+def search():
+    # Direk /search url girildiğinde otomatik olarak anasayfaya gitmesi lazım. Get request koşulunda yani.
+   if request.method == "GET":
+       return redirect(url_for("index"))
+   else:
+       # Posttan gelen değeri almak için, request içinde form diye değişken var, bunun içindeki keyword'ü get ile almak için.
+       keyword = request.form.get("keyword")
 
+       cursor = mysql.connection.cursor()
+
+       sorgu = "Select * from articles where title like '%" + keyword +"%'"
+
+       result = cursor.execute(sorgu)
+
+       if result == 0:
+           flash("Aranan kelimeye uygun makale bulunamadı...","warning")
+           return redirect(url_for("articles"))
+       else:
+           articles = cursor.fetchall()
+            # Bulunan makaleleri articles.html sayfasına gönderiyoruz.
+           return render_template("articles.html",articles = articles)
 
 if __name__ == "__main__":
     # Hata mesajlarını görebilmemiz için debug true parametre verdik.
